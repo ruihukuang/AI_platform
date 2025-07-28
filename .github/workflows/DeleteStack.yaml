@@ -1,0 +1,29 @@
+name: Delete stacks and load balancers/security groups created later
+on:
+ workflow_dispatch:
+
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read 
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+  
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+         role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
+         aws-region: ${{ secrets.REGION }}
+
+    - name: Delete Bastion Stack
+      run: |
+        echo "Deleting Bastion stack..."
+        aws cloudformation delete-stack --stack-name WindowHostStack
+
+        echo "Waiting for Bastion stack deletion to complete..."
+        aws cloudformation wait stack-delete-complete --stack-name WindowHostStack
+
+    
