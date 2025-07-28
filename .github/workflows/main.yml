@@ -1,4 +1,4 @@
-name: Setup Bastion Host
+name: Setup Window Host
 
 on:
  workflow_dispatch:
