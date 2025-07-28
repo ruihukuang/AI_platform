@@ -84,24 +84,19 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
         - arn:aws:iam::aws:policy/AmazonSSMPatchAssociation
-
-  MyIAMPolicy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: SSMManagedInstancePolicy
-      Roles: 
-        - !Ref MyIAMRole
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Action:
-              - ssm:*
-              - s3:*
-              - ec2messages:*
-              - iam:*
-              - ec2:*
-            Resource: "*"
+      Policies:
+        - PolicyName: AdditionalPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ssm:*
+                  - s3:*
+                  - ec2messages:*
+                  - iam:*
+                  - ec2:*
+                Resource: '*'
 
   MyInstanceProfile:
     Type: AWS::IAM::InstanceProfile
