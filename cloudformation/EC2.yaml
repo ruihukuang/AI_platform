@@ -49,7 +49,7 @@ Resources:
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow SSH, HTTP, and HTTPS access
+      GroupDescription: Allow SSH, HTTP, HTTPS, and RDP access
       VpcId: !Ref MyVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -64,6 +64,10 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: 0.0.0.0/0 # Allows HTTPS from anywhere
+        - IpProtocol: tcp
+          FromPort: 3389
+          ToPort: 3389
+          CidrIp: 0.0.0.0/0 # Allows RDP from anywhere (consider restricting this for security)
 
   MyEC2Instance:
     Type: AWS::EC2::Instance
