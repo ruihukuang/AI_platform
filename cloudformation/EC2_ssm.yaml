@@ -150,3 +150,8 @@ Resources:
       Device: /dev/sdf # Replace with your desired device name
       InstanceId: !Ref MyEC2Instance
       VolumeId: !Ref MyVolume
+
+Outputs:
+  MyInstanceId:
+    Description: "The Instance ID"
+    Value: !Ref MyEC2Instance
