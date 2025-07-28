@@ -1,4 +1,4 @@
-name: Setup Window Host
+name: Setup Git UV
 
 on:
   workflow_dispatch:
