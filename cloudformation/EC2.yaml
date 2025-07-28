@@ -99,13 +99,19 @@ Resources:
               - ec2messages:*
             Resource: "*"
 
+  MyInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref MyIAMRole
+
   MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: m7i-flex.large
       ImageId: ami-0d92a37881009d7a9
       KeyName: AI_course # Replace with your key pair name
-      IamInstanceProfile: !Ref MyIAMRole
+      IamInstanceProfile: !Ref MyInstanceProfile
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeviceIndex: 0
