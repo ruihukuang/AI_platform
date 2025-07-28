@@ -86,7 +86,7 @@ Resources:
 
           # Add directory to PATH
           $currentPath = [Environment]::GetEnvironmentVariable("Path", "Machine")
-          $newPath = "$currentPath;C:\Path\To\Add"
+          $newPath = "$currentPath; C:\Users\Administrator\.local\bin"
           [Environment]::SetEnvironmentVariable("Path", $newPath, "Machine")
 
           # Install Git using winget
