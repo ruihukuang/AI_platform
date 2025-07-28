@@ -9,7 +9,7 @@
     "Start-Process winget -ArgumentList \"winget install --id Git.Git -e --source winget\" -Wait -WorkingDirectory \"C:\\Users\\Administrator\"",
     "$gitPath = \"C:\\Program Files\\Git\\bin\"",
     "[Environment]::SetEnvironmentVariable(\"Path\", $env:Path + \";$gitPath\", [EnvironmentVariableTarget]::Machine)",
-    "Start-Sleep -Seconds 2",
+    "Start-Sleep -Seconds 60",
     "Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"git --version; git clone https://github.com/ed-donner/agents.git; cd agents; ls; uv.exe sync\" -Wait -WorkingDirectory \"C:\\Users\\Administrator\"",
     "if ($?) { Write-Host \"All installations, cloning, and sync completed successfully.\" } else { Write-Host \"There were errors during installation, cloning, or sync.\" }"
   ]
