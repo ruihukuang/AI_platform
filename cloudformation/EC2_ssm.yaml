@@ -55,19 +55,19 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0 # Allows SSH from anywhere (consider restricting this for security)
+          CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: 0.0.0.0/0 # Allows HTTP from anywhere
+          CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: 0.0.0.0/0 # Allows HTTPS from anywhere
+          CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
           FromPort: 3389
           ToPort: 3389
-          CidrIp: 0.0.0.0/0 # Allows RDP from anywhere (consider restricting this for security)
+          CidrIp: 0.0.0.0/0
 
   MyIAMRole:
     Type: AWS::IAM::Role
@@ -122,7 +122,7 @@ Resources:
     Properties:
       InstanceType: m7i-flex.large
       ImageId: ami-0d92a37881009d7a9
-      KeyName: AI_course # Replace with your key pair name
+      KeyName: AI_course
       IamInstanceProfile: !Ref MyInstanceProfile
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
@@ -135,3 +135,17 @@ Resources:
           <powershell>
           Restart-Service -Name AmazonSSMAgent
           </powershell>
+
+  MyVolume:
+    Type: AWS::EC2::Volume
+    Properties:
+      AvailabilityZone: ap-southeast-2a # Replace with your desired availability zone
+      Size: 30
+      VolumeType: gp3
+
+  MyVolumeAttachment:
+    Type: AWS::EC2::VolumeAttachment
+    Properties:
+      Device: /dev/sdf # Replace with your desired device name
+      InstanceId: !Ref MyEC2Instance
+      VolumeId: !Ref MyVolume
