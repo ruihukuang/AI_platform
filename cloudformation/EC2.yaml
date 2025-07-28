@@ -105,6 +105,17 @@ Resources:
       Roles:
         - !Ref MyIAMRole
 
+  SSMVPCEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId: !Ref MyVPC
+      ServiceName: com.amazonaws.ap-southeast-2.ssm
+      VpcEndpointType: Interface
+      SubnetIds:
+        - !Ref MySubnet
+      SecurityGroupIds:
+        - !Ref MySecurityGroup
+
   MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
