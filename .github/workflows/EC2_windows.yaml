@@ -1,12 +1,12 @@
 name: Setup Window Host
 
 on:
- workflow_dispatch:
-      
+  workflow_dispatch:
+
 permissions:
-      id-token: write   # This is required for requesting the JWT
-      contents: read 
-  
+  id-token: write   # This is required for requesting the JWT
+  contents: read 
+
 jobs:
   setup-cognito:
     runs-on: ubuntu-latest
@@ -18,8 +18,8 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-         role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
-         aws-region: ${{ secrets.REGION }}
+        role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
+        aws-region: ${{ secrets.REGION }}
 
     - name: Check if Stack Exists
       id: check_stack
@@ -37,10 +37,10 @@ jobs:
       run: |
         STACK_STATUS=$(aws cloudformation describe-stacks --stack-name WindowHostStack --query "Stacks[0].StackStatus" --output text)
         echo "Stack status is $STACK_STATUS"
-        echo "::set-output name=status::$STACK_STATUS"
+        echo "status=$STACK_STATUS" >> $GITHUB_ENV
 
     - name: Delete CloudFormation Stack if ROLLBACK_COMPLETE
-      if: (steps.check_status.outputs.status == 'ROLLBACK_COMPLETE' || steps.check_status.outputs.status == 'ROLLBACK_IN_PROGRESS'|| steps.check_status.outputs.status == 'UPDATE_ROLLBACK_COMPLETE' ) && env.exists == 'true'
+      if: (env.status == 'ROLLBACK_COMPLETE' || env.status == 'ROLLBACK_IN_PROGRESS' || env.status == 'UPDATE_ROLLBACK_COMPLETE') && env.exists == 'true'
       run: |
         aws cloudformation delete-stack --stack-name WindowHostStack
         aws cloudformation wait stack-delete-complete --stack-name WindowHostStack
@@ -55,13 +55,13 @@ jobs:
     
     - name: Retrieve the Output for instance ID 
       run: |
-        INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name <YourStackName> --query "Stacks[0].Outputs[?OutputKey=='MyInstanceId'].OutputValue" --output text)
+        INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name WindowHostStack --query "Stacks[0].Outputs[?OutputKey=='MyInstanceId'].OutputValue" --output text)
         echo "INSTANCE_ID is $INSTANCE_ID"
-        echo "::set-output name=INSTANCE_ID::$INSTANCE_ID"
+        echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
 
     - name: Run SSM Command
       run: | 
         aws ssm send-command \
           --document-name "AWS-RunPowerShellScript" \
-          --targets "Key=instanceids,Values=$INSTANCE_ID" \
+          --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --parameters file://parameters.json
