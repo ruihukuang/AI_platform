@@ -39,6 +39,7 @@ Resources:
       VpcId: !Ref MyVPC
       CidrBlock: 10.0.0.0/24
       MapPublicIpOnLaunch: true
+      AvailabilityZone: ap-southeast-2c # Specify the availability zone
 
   MySubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
