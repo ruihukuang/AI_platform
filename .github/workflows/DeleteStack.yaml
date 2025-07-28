@@ -1,7 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: Delete stacks and load balancers/security groups created later
-
-name: Delete stacks and load balancers/security groups created later
+name: Delete stacks for Window Server
 on:
  workflow_dispatch:
 
