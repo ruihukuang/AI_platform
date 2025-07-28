@@ -1,13 +1,56 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: EC2 Window Server
-
+Description: EC2 Windows Server with VPC
 
 Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MyVPC
+
+  MyInternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref MyInternetGateway
+
+  MyRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
+
+  MyRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref MyRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MyInternetGateway
+
+  MySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.0.0.0/24
+      MapPublicIpOnLaunch: true
+
+  MySubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref MySubnet
+      RouteTableId: !Ref MyRouteTable
+
   MySecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow SSH, HTTP, and HTTPS access
-      VpcId: vpc-xxxxxxxx # Replace with your VPC ID
+      VpcId: !Ref MyVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -28,8 +71,12 @@ Resources:
       InstanceType: m7i-flex.large
       ImageId: ami-0d92a37881009d7a9
       KeyName: MyKeyPair # Replace with your key pair name
-      SecurityGroupIds:
-        - !Ref MySecurityGroup
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          SubnetId: !Ref MySubnet
+          GroupSet:
+            - !Ref MySecurityGroup
       UserData:
         Fn::Base64: !Sub |
           <powershell>
@@ -39,7 +86,7 @@ Resources:
 
           # Add directory to PATH
           $currentPath = [Environment]::GetEnvironmentVariable("Path", "Machine")
-          $newPath = "$currentPath;C:\Path\To\Add"
+          $newPath = "$currentPath; C:\Users\Administrator\.local\bin"
           [Environment]::SetEnvironmentVariable("Path", $newPath, "Machine")
 
           # Install Git using winget
@@ -48,13 +95,16 @@ Resources:
           # Check Git installation
           git --version
 
+          # Clone the GitHub repository
+          git clone https://github.com/ed-donner/agents.git
+
           # Install Cursor using winget
           winget install Anysphere.Cursor --accept-package-agreements --accept-source-agreements
 
           # Check for errors
           if ($?) {
-            Write-Host "All installations completed successfully."
+            Write-Host "All installations and cloning completed successfully."
           } else {
-            Write-Host "There were errors during installation."
+            Write-Host "There were errors during installation or cloning."
           }
           </powershell>
