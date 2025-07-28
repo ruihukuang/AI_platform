@@ -1,13 +1,12 @@
 {
   "commands": [
-    "Restart-Service -Name AmazonSSMAgent",
     "Set-ExecutionPolicy Bypass -Scope Process -Force",
     "irm https://astral.sh/uv/0.8.3/install.ps1 | iex",
     "$currentPath = [Environment]::GetEnvironmentVariable(\"Path\", \"Machine\")",
     "$newPath = \"$currentPath; C:\\Users\\Administrator\\.local\\bin\"",
     "[Environment]::SetEnvironmentVariable(\"Path\", $newPath, \"Machine\")",
     "Set-Location -Path C:\\Users\\Administrator",
-    "Start-Process winget -ArgumentList \"install --id Git.Git -e --source winget\" -Wait -WorkingDirectory \"C:\\Users\\Administrator\"",
+    "Start-Process winget -ArgumentList \"winget install --id Git.Git -e --source winget\" -Wait -WorkingDirectory \"C:\\Users\\Administrator\"",
     "$gitPath = \"C:\\Program Files\\Git\\bin\"",
     "[Environment]::SetEnvironmentVariable(\"Path\", $env:Path + \";$gitPath\", [EnvironmentVariableTarget]::Machine)",
     "Start-Sleep -Seconds 2",
