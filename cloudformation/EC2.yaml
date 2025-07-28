@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: EC2 Windows Server with VPC
+Description: EC2 Windows Server with VPC and SSM
 
 Resources:
   MyVPC:
@@ -69,12 +69,41 @@ Resources:
           ToPort: 3389
           CidrIp: 0.0.0.0/0 # Allows RDP from anywhere (consider restricting this for security)
 
+  MyIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+
+  MyIAMPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: SSMManagedInstancePolicy
+      Roles: 
+        - !Ref MyIAMRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - ssm:*
+              - s3:*
+              - ec2messages:*
+            Resource: "*"
+
   MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: m7i-flex.large
       ImageId: ami-0d92a37881009d7a9
       KeyName: AI_course # Replace with your key pair name
+      IamInstanceProfile: !Ref MyIAMRole
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeviceIndex: 0
