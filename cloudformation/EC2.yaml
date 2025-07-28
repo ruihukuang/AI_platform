@@ -152,6 +152,9 @@ Resources:
           $gitPath = "C:\Program Files\Git\bin"
           [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$gitPath", [EnvironmentVariableTarget]::Machine)
 
+          # Ensure the PATH update is completed
+          Start-Sleep -Seconds 2  # This adds a brief pause to ensure the PATH update is processed
+
           # Simulate closing and reopening PowerShell by starting a new process in C:\Users\Administrator
           Start-Process powershell -ArgumentList '-NoExit', '-Command', 'git --version; git clone https://github.com/ed-donner/agents.git; cd agents; ls; uv.exe sync' -Wait -WorkingDirectory 'C:\Users\Administrator'
 
