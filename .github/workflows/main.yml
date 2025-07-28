@@ -48,7 +48,7 @@ jobs:
     - name: Deploy CloudFormation Stack
       run: |
         aws cloudformation create-stack \
-          --template-body file://CloudFormation/bastion_host.yaml \
+          --template-body file://cloudformation/EC2.yaml \
           --stack-name WindowHostStack \
           --capabilities CAPABILITY_IAM
     
