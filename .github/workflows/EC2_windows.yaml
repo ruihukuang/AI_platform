@@ -53,3 +53,15 @@ jobs:
           --capabilities CAPABILITY_IAM 
         aws cloudformation wait stack-create-complete --stack-name WindowHostStack 
     
+    - name: Retrieve the Output for instance ID 
+      run: |
+        INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name <YourStackName> --query "Stacks[0].Outputs[?OutputKey=='MyInstanceId'].OutputValue" --output text)
+        echo "INSTANCE_ID is $INSTANCE_ID"
+        echo "::set-output name=INSTANCE_ID::$INSTANCE_ID"
+
+    - name: Run SSM Command
+      run: | 
+        aws ssm send-command \
+          --document-name "AWS-RunPowerShellScript" \
+          --targets "Key=instanceids,Values=$INSTANCE_ID" \
+          --parameters file://parameters.json
