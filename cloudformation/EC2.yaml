@@ -95,16 +95,25 @@ Resources:
           # Check Git installation
           git --version
 
+          # Navigate to Administrator's directory
+          Set-Location -Path C:\Users\Administrator
+
           # Clone the GitHub repository
           git clone https://github.com/ed-donner/agents.git
 
-          # Install Cursor using winget
-          winget install Anysphere.Cursor --accept-package-agreements --accept-source-agreements
+          # Change directory to the cloned repository
+          Set-Location -Path C:\Users\Administrator\agents
+
+          # List the contents of the directory
+          ls
+
+          # Run uv.exe sync
+          uv.exe sync
 
           # Check for errors
           if ($?) {
-            Write-Host "All installations and cloning completed successfully."
+            Write-Host "All installations, cloning, and sync completed successfully."
           } else {
-            Write-Host "There were errors during installation or cloning."
+            Write-Host "There were errors during installation, cloning, or sync."
           }
           </powershell>
