@@ -70,7 +70,7 @@ Resources:
     Properties:
       InstanceType: m7i-flex.large
       ImageId: ami-0d92a37881009d7a9
-      KeyName: MyKeyPair # Replace with your key pair name
+      KeyName: AI_course # Replace with your key pair name
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeviceIndex: 0
