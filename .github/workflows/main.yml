@@ -1,55 +1,110 @@
-name: Setup Window Host
+AWSTemplateFormatVersion: '2010-09-09'
+Description: EC2 Windows Server with VPC
 
-on:
- workflow_dispatch:
-      
-permissions:
-      id-token: write   # This is required for requesting the JWT
-      contents: read 
-  
-jobs:
-  setup-cognito:
-    runs-on: ubuntu-latest
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MyVPC
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-         role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
-         aws-region: ${{ secrets.REGION }}
+  MyInternetGateway:
+    Type: AWS::EC2::InternetGateway
 
-    - name: Check if Stack Exists
-      id: check_stack
-      run: |
-        STACK_NAME="WindowHostStack"
-        if aws cloudformation describe-stacks --stack-name $STACK_NAME > /dev/null 2>&1; then
-          echo "exists=true" >> $GITHUB_ENV
-        else
-          echo "exists=false" >> $GITHUB_ENV
-        fi
-        
-    - name: Check CloudFormation Stack Status
-      id: check_status
-      if: env.exists == 'true'
-      run: |
-        STACK_STATUS=$(aws cloudformation describe-stacks --stack-name WindowHostStack --query "Stacks[0].StackStatus" --output text)
-        echo "Stack status is $STACK_STATUS"
-        echo "::set-output name=status::$STACK_STATUS"
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref MyInternetGateway
 
-    - name: Delete CloudFormation Stack if ROLLBACK_COMPLETE
-      if: (steps.check_status.outputs.status == 'ROLLBACK_COMPLETE' || steps.check_status.outputs.status == 'ROLLBACK_IN_PROGRESS'|| steps.check_status.outputs.status == 'UPDATE_ROLLBACK_COMPLETE' ) && env.exists == 'true'
-      run: |
-        aws cloudformation delete-stack --stack-name WindowHostStack
-        aws cloudformation wait stack-delete-complete --stack-name WindowHostStack
+  MyRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
 
-    - name: Deploy CloudFormation Stack
-      run: |
-        aws cloudformation create-stack \
-          --template-body file://cloudformation/EC2.yaml \
-          --stack-name WindowHostStack \
-          --capabilities CAPABILITY_IAM
-    
-        aws cloudformation wait stack-create-complete --stack-name WindowHostStack
+  MyRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref MyRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MyInternetGateway
+
+  MySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.0.0.0/24
+      MapPublicIpOnLaunch: true
+
+  MySubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref MySubnet
+      RouteTableId: !Ref MyRouteTable
+
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH, HTTP, and HTTPS access
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0 # Allows SSH from anywhere (consider restricting this for security)
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0 # Allows HTTP from anywhere
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0 # Allows HTTPS from anywhere
+
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: m7i-flex.large
+      ImageId: ami-0d92a37881009d7a9
+      KeyName: MyKeyPair # Replace with your key pair name
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          SubnetId: !Ref MySubnet
+          GroupSet:
+            - !Ref MySecurityGroup
+      UserData:
+        Fn::Base64: !Sub |
+          <powershell>
+          # Install uv using PowerShell
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          irm https://astral.sh/uv/0.8.3/install.ps1 | iex
+
+          # Add directory to PATH
+          $currentPath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+          $newPath = "$currentPath;C:\Path\To\Add"
+          [Environment]::SetEnvironmentVariable("Path", $newPath, "Machine")
+
+          # Install Git using winget
+          winget install --id Git.Git -e --source winget
+
+          # Check Git installation
+          git --version
+
+          # Clone the GitHub repository
+          git clone https://github.com/ed-donner/agents.git
+
+          # Install Cursor using winget
+          winget install Anysphere.Cursor --accept-package-agreements --accept-source-agreements
+
+          # Check for errors
+          if ($?) {
+            Write-Host "All installations and cloning completed successfully."
+          } else {
+            Write-Host "There were errors during installation or cloning."
+          }
+          </powershell>
