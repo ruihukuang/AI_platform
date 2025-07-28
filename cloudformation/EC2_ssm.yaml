@@ -99,6 +99,8 @@ Resources:
               - ssm:*
               - s3:*
               - ec2messages:*
+              - iam:*
+              - ec2:*
             Resource: "*"
 
   MyInstanceProfile:
