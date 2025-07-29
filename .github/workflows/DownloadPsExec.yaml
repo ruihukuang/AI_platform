@@ -42,8 +42,8 @@ jobs:
                 "inputs": {
                   "runCommand": [
                     "$zipUrl = ''https://download.sysinternals.com/files/PSTools.zip''",
-                    "$zipPath = ''C:\\Path\\To\\Save\\PSTools.zip''",
-                    "$extractPath = ''C:\\Path\\To\\Extract''",
+                    "$zipPath = ''C:\Windows\system32\config\systemprofile\.local\bin\PSTools.zip''",
+                    "$extractPath = ''C:\Windows\system32\config\systemprofile\.local\bin\Extract''",
                     "Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath",
                     "Expand-Archive -Path $zipPath -DestinationPath $extractPath",
                     "Remove-Item -Path $zipPath"
