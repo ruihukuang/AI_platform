@@ -32,7 +32,7 @@ jobs:
         timeout 600s bash -c 'COMMAND_ID=$(aws ssm send-command \
           --document-name "AWS-RunPowerShellScript" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
-          --parameters file://parameters.json \
+          --parameters "executionTimeout=600,file://parameters.json" \
           --timeout-seconds 180 \
           --query 'Command.CommandId' --output text)
           echo "Command ID: $COMMAND_ID"
