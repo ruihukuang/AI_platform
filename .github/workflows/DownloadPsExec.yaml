@@ -1,4 +1,4 @@
-name: Setup Window Host
+name: Download PsExec
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
   contents: read 
 
 jobs:
-  setup-cognito:
+  setup-PsExec:
     runs-on: ubuntu-latest
 
     steps:
