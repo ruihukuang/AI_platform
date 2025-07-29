@@ -27,53 +27,39 @@ jobs:
         echo "INSTANCE_ID is $INSTANCE_ID"
         echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
 
-    - name: Update or Create SSM Document
+    - name: Check and Update/Create SSM Document
       run: |
-        aws ssm update-document \
-          --name "DownloadPsExec" \
-          --document-version "\$LATEST" \
-          --content '{
-            "schemaVersion": "2.2",
-            "description": "Download and extract PsExec.exe",
-            "mainSteps": [
-              {
-                "action": "aws:runPowerShellScript",
-                "name": "downloadAndExtractPsExec",
-                "inputs": {
-                  "runCommand": [
-                    "$zipUrl = \"https://download.sysinternals.com/files/PSTools.zip\"",
-                    "$zipPath = \"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\PSTools.zip\"",
-                    "$extractPath = \"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\Extract\"",
-                    "Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath",
-                    "Expand-Archive -Path $zipPath -DestinationPath $extractPath",
-                    "Remove-Item -Path $zipPath"
-                  ]
-                }
+        DOCUMENT_CONTENT='{
+          "schemaVersion": "2.2",
+          "description": "Download and extract PsExec.exe",
+          "mainSteps": [
+            {
+              "action": "aws:runPowerShellScript",
+              "name": "downloadAndExtractPsExec",
+              "inputs": {
+                "runCommand": [
+                  "$zipUrl = \"https://download.sysinternals.com/files/PSTools.zip\"",
+                  "$zipPath = \"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\PSTools.zip\"",
+                  "$extractPath = \"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\Extract\"",
+                  "Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath",
+                  "Expand-Archive -Path $zipPath -DestinationPath $extractPath",
+                  "Remove-Item -Path $zipPath"
+                ]
               }
-            ]
-          }' || aws ssm create-document \
-          --name "DownloadPsExec" \
-          --document-type "Command" \
-          --content '{
-            "schemaVersion": "2.2",
-            "description": "Download and extract PsExec.exe",
-            "mainSteps": [
-              {
-                "action": "aws:runPowerShellScript",
-                "name": "downloadAndExtractPsExec",
-                "inputs": {
-                  "runCommand": [
-                    "$zipUrl = \"https://download.sysinternals.com/files/PSTools.zip\"",
-                    "$zipPath = \"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\PSTools.zip\"",
-                    "$extractPath = \"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\Extract\"",
-                    "Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath",
-                    "Expand-Archive -Path $zipPath -DestinationPath $extractPath",
-                    "Remove-Item -Path $zipPath"
-                  ]
-                }
-              }
-            ]
-          }'
+            }
+          ]
+        }'
+
+        CURRENT_CONTENT=$(aws ssm get-document --name "DownloadPsExec" --query "Content" --output text)
+
+        if [ "$DOCUMENT_CONTENT" != "$CURRENT_CONTENT" ]; then
+          aws ssm update-document \
+            --name "DownloadPsExec" \
+            --document-version "\$LATEST" \
+            --content "$DOCUMENT_CONTENT"
+        else
+          echo "Document content is already up-to-date."
+        fi
 
     - name: Run SSM Command
       run: |
