@@ -32,8 +32,8 @@ jobs:
         COMMAND_ID=$(aws ssm send-command \
           --document-name "AWS-RunPowerShellScript" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
-          --parameters file://parameters.json
-          --TimeoutSeconds 120 \
+          --parameters file://parameters.json \
+          --timeout-seconds 120 \
           --query 'Command.CommandId' --output text)
          echo "Command ID: $COMMAND_ID"
 
