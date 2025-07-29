@@ -33,3 +33,4 @@ jobs:
           --document-name "AWS-RunPowerShellScript" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --parameters file://parameters.json
+          --timeout-seconds 120
