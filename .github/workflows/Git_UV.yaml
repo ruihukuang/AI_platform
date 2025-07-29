@@ -29,7 +29,7 @@ jobs:
 
     - name: Run SSM Command
       run: | 
-        timeout 600s bash -c 'COMMAND_ID=$(aws ssm send-command \
+        COMMAND_ID=$(aws ssm send-command \
           --document-name "AWS-RunPowerShellScript" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --parameters "executionTimeout=600,file://parameters.json" \
@@ -48,4 +48,4 @@ jobs:
           done
 
          echo "Command execution completed with status: $STATUS"
-         '
+         
