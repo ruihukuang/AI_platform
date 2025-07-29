@@ -29,22 +29,23 @@ jobs:
 
     - name: Run SSM Command
       run: | 
-        COMMAND_ID=$(aws ssm send-command \
+        timeout 600s bash -c 'COMMAND_ID=$(aws ssm send-command \
           --document-name "AWS-RunPowerShellScript" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --parameters file://parameters.json \
-          --timeout-seconds 120 \
+          --timeout-seconds 180 \
           --query 'Command.CommandId' --output text)
-         echo "Command ID: $COMMAND_ID"
+          echo "Command ID: $COMMAND_ID"
 
-         # Wait for the command to complete
-         while true; do
-           STATUS=$(aws ssm list-command-invocations --command-id $COMMAND_ID --query 'CommandInvocations[0].Status' --output text)
-           echo "Current Status: $STATUS"
-           if [[ "$STATUS" == "Success" || "$STATUS" == "Failed" ]]; then
-             break
-           fi
-           sleep 10
-         done
+          # Wait for the command to complete
+          while true; do
+            STATUS=$(aws ssm list-command-invocations --command-id $COMMAND_ID --query 'CommandInvocations[0].Status' --output text)
+            echo "Current Status: $STATUS"
+            if [[ "$STATUS" == "Success" || "$STATUS" == "Failed" ]]; then
+              break
+            fi
+            sleep 10
+          done
 
          echo "Command execution completed with status: $STATUS"
+         '
