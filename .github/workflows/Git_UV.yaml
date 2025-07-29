@@ -8,7 +8,7 @@ permissions:
   contents: read 
 
 jobs:
-  setup-cognito:
+  setup-ec2:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,10 +29,22 @@ jobs:
 
     - name: Run SSM Command
       run: | 
-        aws ssm send-command \
+        COMMAND_ID=$(aws ssm send-command \
           --document-name "AWS-RunPowerShellScript" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --parameters file://parameters.json
           --TimeoutSeconds 120 \
           --query 'Command.CommandId' --output text)
          echo "Command ID: $COMMAND_ID"
+
+         # Wait for the command to complete
+         while true; do
+           STATUS=$(aws ssm list-command-invocations --command-id $COMMAND_ID --query 'CommandInvocations[0].Status' --output text)
+           echo "Current Status: $STATUS"
+           if [[ "$STATUS" == "Success" || "$STATUS" == "Failed" ]]; then
+             break
+           fi
+           sleep 10
+         done
+
+         echo "Command execution completed with status: $STATUS"
