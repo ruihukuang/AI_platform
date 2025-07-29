@@ -5,7 +5,7 @@ on:
 
 permissions:
   id-token: write   # This is required for requesting the JWT
-  contents: read 
+  contents: read
 
 jobs:
   setup-PsExec:
@@ -14,20 +14,20 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
         aws-region: ${{ secrets.REGION }}
 
-  - name: Retrieve the Output for instance ID 
+    - name: Retrieve the Output for instance ID
       run: |
         INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name WindowHostStack --query "Stacks[0].Outputs[?OutputKey=='MyInstanceId'].OutputValue" --output text)
         echo "INSTANCE_ID is $INSTANCE_ID"
         echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
 
-- name: Create SSM Document
+    - name: Create SSM Document
       run: |
         aws ssm create-document \
           --name "DownloadPsExec" \
@@ -57,7 +57,7 @@ jobs:
       run: |
         aws ssm send-command \
           --document-name "DownloadPsExec" \
-          --parameters executionTimeout=["600"] \
+          --parameters executionTimeout=["1200"] \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --comment "Running DownloadPsExec document" \
-          --timeout-seconds 600
+          --timeout-seconds 180
