@@ -1,0 +1,37 @@
+
+
+
+
+- name: Create SSM Document
+      run: |
+        aws ssm create-document \
+          --name "DownloadPsExec" \
+          --document-type "Command" \
+          --content '{
+            "schemaVersion": "2.2",
+            "description": "Download and extract PsExec.exe",
+            "mainSteps": [
+              {
+                "action": "aws:runPowerShellScript",
+                "name": "downloadAndExtractPsExec",
+                "inputs": {
+                  "runCommand": [
+                    "$zipUrl = ''https://download.sysinternals.com/files/PSTools.zip''",
+                    "$zipPath = ''C:\\Path\\To\\Save\\PSTools.zip''",
+                    "$extractPath = ''C:\\Path\\To\\Extract''",
+                    "Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath",
+                    "Expand-Archive -Path $zipPath -DestinationPath $extractPath",
+                    "Remove-Item -Path $zipPath"
+                  ]
+                }
+              }
+            ]
+          }'
+
+    - name: Run SSM Command
+      run: |
+        aws ssm send-command \
+          --document-name "DownloadPsExec" \
+          --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
+          --comment "Running DownloadPsExec document" \
+          --timeout-seconds 600
