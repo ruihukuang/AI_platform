@@ -1,0 +1,36 @@
+name: Download PsExec
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read
+
+jobs:
+  setup-PsExec:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
+        aws-region: ${{ secrets.REGION }}
+
+    - name: Retrieve the Output for instance ID
+      run: |
+        INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name WindowHostStack --query "Stacks[0].Outputs[?OutputKey=='MyInstanceId'].OutputValue" --output text)
+        echo "INSTANCE_ID is $INSTANCE_ID"
+        echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+ 
+    - name: Run SSM Command
+      run: |
+        aws ssm send-command \
+          --document-name "DownloadPsExec" \
+          --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
+          --comment "Running DownloadPsExec document" \
+          --timeout-seconds 600
