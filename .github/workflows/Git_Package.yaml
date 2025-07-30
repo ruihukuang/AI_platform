@@ -34,13 +34,13 @@ jobs:
 
     - name: Create a SSM document
       run: |
-        aws ssm create-document --name "CheckPathAndRunCommand_Test" --document-type "Command" --content '{
+        aws ssm create-document --name "CheckGitPackages_Test" --document-type "Command" --content '{
           "schemaVersion": "2.2",
           "description": "Check winget version, install Git, and verify installation",
           "mainSteps": [
             {
               "action": "aws:runPowerShellScript",
-              "name": "checkAndInstallGit",
+              "name": "checkAndInstallGitPackages",
               "inputs": {
                 "runCommand": [
                   "winget --version",
@@ -63,7 +63,7 @@ jobs:
     - name: Run SSM Command
       run: |
         aws ssm send-command \
-          --document-name "CheckPathAndRunCommand_Test" \
+          --document-name "CheckGitPackages_Test" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
-          --comment "Running CheckPathAndRunCommand_Test document" \
+          --comment "Running CheckGitPackages_Test document" \
           --timeout-seconds 1200
