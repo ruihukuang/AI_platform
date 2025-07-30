@@ -3,6 +3,10 @@ name: Check a Path in EC2
 on:
  workflow_dispatch:
 
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read
+
 jobs:
   checkPath_EC2:
     runs-on: ubuntu-latest
