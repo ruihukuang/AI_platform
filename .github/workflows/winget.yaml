@@ -34,7 +34,7 @@ jobs:
 
     - name: Create a SSM document
       run: |
-        aws ssm create-document --name "WinGet_Test2" --document-type "Command" --content '{
+        aws ssm create-document --name "WinGet_Test3" --document-type "Command" --content '{
           "schemaVersion": "2.2",
           "description": "Download and install WinGet, then check versions",
           "mainSteps": [
@@ -43,7 +43,7 @@ jobs:
               "name": "installWinGetAndCheckVersions",
               "inputs": {
                 "runCommand": [
-                  "Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.11.430/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -OutFile C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\WinGet.msixbundle",
+                  "Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\WinGet.msixbundle",
                   "Add-AppxPackage C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\WinGet.msixbundle",
                   "uv --version",
                   "winget --version"
@@ -56,7 +56,7 @@ jobs:
     - name: Run SSM Command
       run: |
         aws ssm send-command \
-          --document-name "WinGet_Test2" \
+          --document-name "WinGet_Test3" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
-          --comment "Running WinGet_Test2 document" \
+          --comment "Running WinGet_Test3 document" \
           --timeout-seconds 1200
