@@ -38,9 +38,9 @@ jobs:
               "name": "downloadAndExtractPsExec",
               "inputs": {
                 "runCommand": [
-                  "$zipUrl = \"https://download.sysinternals.com/files/PSTools.zip\"",
-                  "$zipPath = \"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\PSTools.zip\"",
-                  "$extractPath = \"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\Extract\"",
+                  "$zipUrl=\"https://download.sysinternals.com/files/PSTools.zip\"",
+                  "$zipPath=\"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\PSTools.zip\"",
+                  "$extractPath=\"C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\Extract\"",
                   "Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath",
                   "Expand-Archive -Path $zipPath -DestinationPath $extractPath",
                   "Remove-Item -Path $zipPath"
@@ -65,6 +65,7 @@ jobs:
       run: |
         aws ssm send-command \
           --document-name "DownloadPsExec" \
+          --document-version "2"
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --comment "Running DownloadPsExec document" \
           --timeout-seconds 600
