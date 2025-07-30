@@ -36,18 +36,22 @@ jobs:
       run: |
         aws ssm create-document --name "CheckPathAndRunCommand_Test" --document-type "Command" --content '{
           "schemaVersion": "2.2",
-          "description": "Check if a path exists and run a command",
+          "description": "Check if paths exist and run a command",
           "mainSteps": [
             {
               "action": "aws:runPowerShellScript",
-              "name": "checkPathAndRunCommand_Test",
+              "name": "checkPaths",
               "inputs": {
                 "runCommand": [
-                  "if (Test-Path ''C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\Extract'') {",
-                  "  Write-Output ''Path exists. Running command...''",
-                  "  # Place your command here",
+                  "if (Test-Path ''C:\\Windows\\system32\\config\\systemprofile\\.local\\bin'') {",
+                  "  Write-Output ''Path C:\\Windows\\system32\\config\\systemprofile\\.local\\bin exists.''",
                   "} else {",
-                  "  Write-Output ''Path does not exist.''",
+                  "  Write-Output ''Path C:\\Windows\\system32\\config\\systemprofile\\.local\\bin does not exist.''",
+                  "}",
+                  "if (Test-Path ''C:\\Users\\Administrator'') {",
+                  "  Write-Output ''Path C:\\Users\\Administrator exists.''",
+                  "} else {",
+                  "  Write-Output ''Path C:\\Users\\Administrator does not exist.''",
                   "}"
                 ]
               }
