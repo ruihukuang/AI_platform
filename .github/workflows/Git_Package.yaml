@@ -45,7 +45,7 @@ jobs:
                 "runCommand": [
                   "winget --version",
                   "winget install --id Git.Git -e --source winget",
-                  "Start-Sleep -Seconds 300",  # Wait for the installation to complete
+                  "Start-Sleep -Seconds 300",
                   "git --version",
                   "git clone https://github.com/ed-donner/agents.git",
                   "Start-Sleep -Seconds 300",
