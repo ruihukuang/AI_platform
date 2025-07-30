@@ -1,0 +1,46 @@
+name: Create and Run SSM Document
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-ssm-document:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create SSM Document
+      uses: aws-actions/aws-cli-action@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        command: |
+          ssm create-document --name "CheckPathAndRunCommand" --document-type "Command" --content '{
+            "schemaVersion": "2.2",
+            "description": "Check if a path exists and run a command",
+            "mainSteps": [
+              {
+                "action": "aws:runCommand",
+                "name": "checkPathAndRunCommand",
+                "inputs": {
+                  "DocumentName": "AWS-RunPowerShellScript",
+                  "Parameters": {
+                    "commands": [
+                      "if (Test-Path ''C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\Extract'') {",
+                      "  Write-Output ''Path exists. Running command...''",
+                      "  # Place your command here",
+                      "} else {",
+                      "  Write-Output ''Path does not exist.''",
+                      "}"
+                    ]
+                  }
+                }
+              }
+            ]
+          }'
+
+      
