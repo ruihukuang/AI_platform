@@ -1,4 +1,4 @@
-name: Download PsExec
+name: Execute Download PsExec
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  setup-PsExec:
+  setup-PsExec-execution:
     runs-on: ubuntu-latest
 
     steps:
