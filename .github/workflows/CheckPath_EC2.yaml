@@ -39,11 +39,10 @@ jobs:
           "description": "Check if a path exists and run a command",
           "mainSteps": [
             {
-              "action": "aws:runCommand",
+              "action": "aws:runPowerShellScript",
               "name": "checkPathAndRunCommand_Test",
               "inputs": {
-                "DocumentName": "AWS-RunPowerShellScript",
-                "commands": [
+                "runCommand": [
                   "if (Test-Path ''C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\\Extract'') {",
                   "  Write-Output ''Path exists. Running command...''",
                   "  # Place your command here",
