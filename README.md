@@ -1,1 +1,1 @@
-# AI_platform
+# WindowEC2_Git_Cursor_UV
