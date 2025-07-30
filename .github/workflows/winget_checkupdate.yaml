@@ -36,7 +36,7 @@ jobs:
       run: |
         aws ssm update-document --name "WinGetCheck_Test" --document-version "\$LATEST" --content '{
           "schemaVersion": "2.2",
-          "description": "Run commands to check WinGet version",
+          "description": "Run commands to check WinGet version - update",
           "mainSteps": [
             {
               "action": "aws:runPowerShellScript",
