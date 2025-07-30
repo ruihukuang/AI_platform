@@ -51,10 +51,29 @@ jobs:
           ]
         }'
 
-    - name: Run SSM Command
+    - name: Run SSM Command version 4
       run: |
         aws ssm send-command \
           --document-name "WinGetCheck_Test" \
+          --document-version "4" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
-          --comment "Running WinGetCheck_Test document" \
+          --comment "Running WinGetCheck_Test document version 4" \
+          --timeout-seconds 1200
+
+    - name: Run SSM Command  version 3
+      run: |
+        aws ssm send-command \
+          --document-name "WinGetCheck_Test" \
+          --document-version "3" \
+          --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
+          --comment "Running WinGetCheck_Test document version 3" \
+          --timeout-seconds 1200
+          
+    - name: Run SSM Command  version 2
+      run: |
+        aws ssm send-command \
+          --document-name "WinGetCheck_Test" \
+          --document-version "2" \
+          --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
+          --comment "Running WinGetCheck_Test document version 2" \
           --timeout-seconds 1200
