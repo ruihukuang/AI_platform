@@ -34,7 +34,7 @@ jobs:
 
     - name: Create a SSM document
       run: |
-        ssm create-document --name "CheckPathAndRunCommand_Test" --document-type "Command" --content '{
+        aws ssm create-document --name "CheckPathAndRunCommand_Test" --document-type "Command" --content '{
           "schemaVersion": "2.2",
           "description": "Check if a path exists and run a command",
           "mainSteps": [
