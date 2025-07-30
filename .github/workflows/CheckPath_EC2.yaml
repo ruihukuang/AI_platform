@@ -1,9 +1,7 @@
 name: Create and Run SSM Document
 
 on:
-  push:
-    branches:
-      - main
+ workflow_dispatch:
 
 jobs:
   checkPath_EC2:
