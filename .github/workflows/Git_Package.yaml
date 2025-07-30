@@ -1,4 +1,4 @@
-name: Check a Path in EC2
+name: Install git and packages
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  checkPath_EC2:
+  InstallationGitPackage:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
