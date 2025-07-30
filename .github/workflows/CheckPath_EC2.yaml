@@ -40,7 +40,7 @@ jobs:
           "mainSteps": [
              {
               "action": "aws:runCommand",
-              "name": "checkPathAndRunCommand",
+              "name": "checkPathAndRunCommand_Test",
               "inputs": {
                  "DocumentName": "AWS-RunPowerShellScript",
                  "Parameters": {
