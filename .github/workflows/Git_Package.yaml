@@ -1,0 +1,69 @@
+name: Check a Path in EC2
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read
+
+jobs:
+  checkPath_EC2:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
+        aws-region: ${{ secrets.REGION }}
+
+    - name: Update AWS CLI
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install --update
+
+    - name: Retrieve the Output for instance ID 
+      run: |
+        INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name WindowHostStack --query "Stacks[0].Outputs[?OutputKey=='MyInstanceId'].OutputValue" --output text)
+        echo "INSTANCE_ID is $INSTANCE_ID"
+        echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
+
+    - name: Create a SSM document
+      run: |
+        aws ssm create-document --name "CheckPathAndRunCommand_Test" --document-type "Command" --content '{
+          "schemaVersion": "2.2",
+          "description": "Check winget version, install Git, and verify installation",
+          "mainSteps": [
+            {
+              "action": "aws:runPowerShellScript",
+              "name": "checkAndInstallGit",
+              "inputs": {
+                "runCommand": [
+                  "winget --version",
+                  "winget install --id Git.Git -e --source winget",
+                  "Start-Sleep -Seconds 300",  # Wait for the installation to complete
+                  "powershell -Command {",
+                  "  git --version",
+                  "  git clone https://github.com/ed-donner/agents.git",
+                  "  Start-Sleep -Seconds 300",
+                  "  cd agents",
+                  "  ls",
+                  "  uv.exe sync",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }'
+
+    - name: Run SSM Command
+      run: |
+        aws ssm send-command \
+          --document-name "CheckPathAndRunCommand_Test" \
+          --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
+          --comment "Running CheckPathAndRunCommand_Test document" \
+          --timeout-seconds 1200
