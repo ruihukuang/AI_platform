@@ -34,7 +34,7 @@ jobs:
 
     - name: Create a SSM document
       run: |
-        aws ssm create-document --name "WinGet_Test" --document-type "Command" --content '{
+        aws ssm create-document --name "WinGet_Test2" --document-type "Command" --content '{
           "schemaVersion": "2.2",
           "description": "Download and install WinGet, then check versions",
           "mainSteps": [
@@ -56,7 +56,7 @@ jobs:
     - name: Run SSM Command
       run: |
         aws ssm send-command \
-          --document-name "WinGet_Test" \
+          --document-name "WinGet_Test2" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
-          --comment "Running WinGet_Test document" \
+          --comment "Running WinGet_Test2 document" \
           --timeout-seconds 1200
