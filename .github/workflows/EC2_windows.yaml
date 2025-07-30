@@ -58,10 +58,3 @@ jobs:
         INSTANCE_ID=$(aws cloudformation describe-stacks --stack-name WindowHostStack --query "Stacks[0].Outputs[?OutputKey=='MyInstanceId'].OutputValue" --output text)
         echo "INSTANCE_ID is $INSTANCE_ID"
         echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_ENV
-
-    - name: Run SSM Command
-      run: | 
-        aws ssm send-command \
-          --document-name "AWS-RunPowerShellScript" \
-          --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
-          --parameters file://parameters.json
