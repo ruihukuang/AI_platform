@@ -1,4 +1,4 @@
-name: Update WinGet check
+name: Update WinGet
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  UpdateWinGetCheck:
+  UpdateWinGet:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -45,8 +45,8 @@ jobs:
                 "runCommand": [
                   "whoami",
                   "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList \"/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -i -s powershell.exe -Command \\\"winget --version\\\"\"",
-                  "& '\"C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\WindowsApps\\winget.exe\"' --version",
-                  "& '\"C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\WindowsApps\\winget\"' --version"
+                  "& \"C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\WindowsApps\\winget.exe\" --version",
+                  "& \"C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\WindowsApps\\winget\" --version"
                 ]
               }
             }
