@@ -1,4 +1,4 @@
-name: Create and Run SSM Document
+name: Check a Path in EC2
 
 on:
  workflow_dispatch:
