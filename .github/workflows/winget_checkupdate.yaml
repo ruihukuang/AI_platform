@@ -44,7 +44,7 @@ jobs:
               "inputs": {
                 "runCommand": [
                   "whoami",
-                  "Set-Content -Path \"C:\\Users\\Administrator\\Downloads\\winget_command.txt\" -Value \"Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -i -s powershell.exe -Command \\\"winget --version\\\"'\""
+                  "Start-Process -FilePath \"C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe\" -ArgumentList \"-i -s powershell.exe -Command \\\"winget --version\\\"\""
                 ]
               }
             }
