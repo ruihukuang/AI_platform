@@ -1,23 +1,18 @@
 # WindowEC2_Git_Cursor_UV
 
-Foundation 
+1 Create a EC2 instance with window AMI  
 
-lab  1
+<img width="1653" height="781" alt="image" src="https://github.com/user-attachments/assets/e780e9b9-66fc-4fa5-a3c1-7cd566991959" />  
 
-results
+2 Install PsExec with a self created ssm document using system manager 
+<img width="1766" height="777" alt="image" src="https://github.com/user-attachments/assets/9e13fc24-5f83-4462-80de-1ea89652aa34" />
 
-<img width="604" height="221" alt="image" src="https://github.com/user-attachments/assets/d65edd23-a611-4083-ae83-8acead907e14" />
+3 Install git, uv and python packages and a folder from github repo with ssm command parameters using system manager 
+<img width="1647" height="840" alt="image" src="https://github.com/user-attachments/assets/935215c8-eff4-432b-bfb1-e55c8e913ca4" />   
+<img width="1784" height="816" alt="image" src="https://github.com/user-attachments/assets/e27c2244-125e-437e-b935-8b8a22326f06" />    
+<img width="1754" height="780" alt="image" src="https://github.com/user-attachments/assets/4160ae3f-14a6-4970-bccf-d553b1fd1e4b" />  
+<img width="1754" height="780" alt="image" src="https://github.com/user-attachments/assets/bb640614-3d55-48c9-ad2b-dc9114b3b463" />
 
-
-
-<img width="842" height="266" alt="image" src="https://github.com/user-attachments/assets/ff97cb9e-3079-4720-8513-725abb9f3491" />
-
-
-
-
-<img width="985" height="524" alt="image" src="https://github.com/user-attachments/assets/78ddc893-593a-446d-96a8-222116cf998d" />
-
-<img width="882" height="491" alt="image" src="https://github.com/user-attachments/assets/ae8c2109-4bf0-4908-ad25-b9fbfad0b9bb" />
 
 
 
