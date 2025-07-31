@@ -19,9 +19,9 @@
     "& cd agents", 
     "ls",
     "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe' ",
-    "& "C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv" --version",
+    "& \"C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv\" --version",
     "& cd agents", 
-    "& "C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv" sync"
+    "& \"C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv\" sync"
   ],
   "executionTimeout": ["1200"]
 }
