@@ -34,5 +34,5 @@ jobs:
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --comment "Running installation for uv git repo and packages" \
           --parameters file://ssm_setup.json \
-          --timeout-seconds 1200
+          --timeout-seconds 600
 
