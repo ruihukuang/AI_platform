@@ -1,6 +1,6 @@
 {
   "commands": [
-    "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe'",
+    "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe' -Wait",
     "Set-ExecutionPolicy Bypass -Scope Process -Force",
     "irm https://astral.sh/uv/0.8.3/install.ps1 | iex",
     "# Get the current PATH",
