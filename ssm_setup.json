@@ -1,6 +1,6 @@
 {
   "commands": [
-    "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe' -Wait",
+    "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe' ",
     "Set-ExecutionPolicy Bypass -Scope Process -Force",
     "irm https://astral.sh/uv/0.8.3/install.ps1 | iex",
     "# Get the current PATH",
@@ -10,17 +10,13 @@
     "# Set the updated PATH",
     "[System.Environment]::SetEnvironmentVariable('Path', $newPath, 'Machine')", 
     "& \"C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv\" --version",
-    "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe' -Wait",
     "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))", 
     "& C:\\ProgramData\\chocolatey\\bin\\choco.exe install git -y --scope system",
     "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe' -Wait",
     "& 'C:\\Program Files\\Git\\cmd\\git' --version",
     "& 'C:\\Program Files\\Git\\cmd\\git' clone https://github.com/ed-donner/agents.git", 
     "& cd agents", 
-    "ls",
-    "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe' ",
-    "& \"C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv\" --version",
-    "& cd agents", 
+    "& ls",
     "& \"C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv\" sync"
   ],
   "executionTimeout": ["600"]
