@@ -26,5 +26,5 @@
     "cd agents",
     "& \"C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv\" sync"
   ],
-  "executionTimeout": "1200"
+  "executionTimeout": ["1200"]
 }
