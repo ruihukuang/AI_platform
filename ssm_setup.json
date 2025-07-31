@@ -9,7 +9,7 @@
     "$newPath=\"$currentPath;C:\\Windows\\system32\\config\\systemprofile\\.local\\bin\"", 
     "# Set the updated PATH",
     "[System.Environment]::SetEnvironmentVariable('Path', $newPath, 'Machine')", 
-    "& "C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv" --version",
+    "& \"C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\uv\" --version",
     "Start-Process -FilePath cmd.exe -Verb Runas -ArgumentList '/k C:\\Windows\\System32\\config\\systemprofile\\.local\\bin\\Extract\\PsExec.exe -accepteula -i -s powershell.exe' -Wait",
     "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))", 
     "& C:\\ProgramData\\chocolatey\\bin\\choco.exe install git -y --scope system",
