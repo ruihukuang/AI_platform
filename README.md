@@ -1,5 +1,9 @@
 # WindowEC2_Git_Cursor_UV
 
+Foundation 
+
+lab  1
+
 results
 
 <img width="604" height="221" alt="image" src="https://github.com/user-attachments/assets/d65edd23-a611-4083-ae83-8acead907e14" />
