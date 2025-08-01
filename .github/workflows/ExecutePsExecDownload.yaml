@@ -31,7 +31,7 @@ jobs:
       run: |
         aws ssm send-command \
           --document-name "DownloadPsExec" \
-          --document-version "2" \
+          --document-version "3" \
           --targets "Key=instanceids,Values=${{ env.INSTANCE_ID }}" \
           --comment "Running DownloadPsExec document" \
           --timeout-seconds 600
