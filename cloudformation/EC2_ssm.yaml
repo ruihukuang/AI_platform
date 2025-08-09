@@ -138,7 +138,7 @@ Resources:
     Type: AWS::EC2::Volume
     Properties:
       AvailabilityZone: ap-southeast-2c
-      Size: 30
+      Size: 200
       VolumeType: gp3
 
   MyVolumeAttachment:
